@@ -1,0 +1,101 @@
+#include <Windows.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+//устанавливает цвет фона и объекта за ним
+void SetColor(int text, int bg)
+{
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hStdOut, (WORD)((bg << 4) | text));
+}
+
+//Затенение / Удаление текста. (Время затенения, включить линейное затенение?)
+int blackout(int time, bool switcher)
+{
+    if (switcher == 1)
+    {
+        system("color 0F");
+        Sleep(time);
+        system("color 07");
+        Sleep(time);
+        system("color 08");
+        Sleep(time);
+        system("cls");
+        system("color 0F");
+    }
+    else system("cls");
+    return time, switcher;
+}
+
+//Текст, количество символов, время ввода каждого символа
+int write(string word, int character_num = 0, int time = 0)
+{
+    int counter = 0;
+    char symbol_num;
+
+    for (int i = 0; i < character_num; i++)
+    {
+        symbol_num = word.at(counter);
+        cout << symbol_num;
+        counter++;
+        Sleep(time);
+    }
+    return word, character_num, time;
+}
+
+//Функция художника - использующая SetColor. картинка(ASCII, без пробелов), через сколько символов конец строки? включение/выключение инициализации света, сколько символов?
+int artist(string word, int line_end, bool color_initialization = 0, int character_num = 0)
+{
+    char symbol_num;
+
+    int space_counter = 0;
+    int character_counter = 0;
+
+    for (int i = 0; i < character_num; i++)
+    {
+        symbol_num = word.at(character_counter);
+
+        if (color_initialization == 1)
+        {
+            if (symbol_num == '1') //чёрный
+            {
+                SetColor(0, 0);
+            }
+
+            if (symbol_num == '2') //Зелёный
+            {
+                SetColor(8, 8);
+            }
+
+            if (symbol_num == '3') //Синий
+            {
+                SetColor(7, 7);
+            }
+
+            if (symbol_num == '4') //Голубой
+            {
+                SetColor(15, 15);
+            }
+        }
+
+        if (space_counter == line_end)
+        {
+            cout << endl;
+            space_counter = 0;
+        }
+
+        cout << symbol_num;
+        SetColor(15, 0);
+
+        space_counter++;
+        character_counter++;
+    }
+    SetColor(15, 0);
+    return color_initialization, character_num, word, line_end;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Russian"); //Локализация
+}
